@@ -5,6 +5,8 @@
 using namespace std;
 
 # define  MAX_LEVELS  3000
+# define RES_SIZE 50
+
 void shuffle(int *arr,int size)
 {
     int random = 0;
@@ -206,20 +208,31 @@ void shell(int *arr, int size)
     	increment = increment * 5 / 11;
   }
 }
-     
+
+void savefile(float *result) 
+{ 
+FILE *file; 
+file = fopen("file.txt","w+");
+int i=0;
+for(i=0;i<RES_SIZE;i++)
+{
+fprintf(file,"time: %f  size: ",1.23); /*writes*/ 
+}
+fclose(file); 
+}
 
 int main()
 {
     clock_t t;
-    float result[5][2];
+    float result[RES_SIZE][2];
     int op = 1;
     int size = 1000;
-    
+    int sizeincrement = 100;
     printf("which sort? 1-quick 2-bubble 3-selection 4-radix 5-merge 6-shell \n");
     scanf("%d",&op);
     
     
-    for(int o = 0;o<5;o++)
+    for(int o = 0;o<RES_SIZE;o++)
     {
     int arr [size];
     int temp [size];
@@ -265,8 +278,15 @@ int main()
     result[o][0] = ((float)t)/CLOCKS_PER_SEC;
     result[o][1] = size;
     printf("time %f sec , size %f \n",result[o][0],result[o][1]);
-    size = size +1000;
+    size = size + sizeincrement;
     }
+    FILE *file; 
+    file = fopen("file.txt","w+");
+    for(int p=0;p<RES_SIZE;p++)
+    {
+    fprintf(file,"time: %f  size: %f\n",result[p][0],result[p][1]); /*writes*/ 
+    }
+    fclose(file); 
     
     system("pause");
     return 0;
