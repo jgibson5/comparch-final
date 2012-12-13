@@ -25,6 +25,74 @@ void printarr(int *arr,int size)
   printf("\n");
 }
 
+//merge sort  ---------------------------------
+void m_sort(int *numbers, int *temp, int left, int right);
+void merge(int *numbers, int *temp, int left, int mid, int right);
+void mergeSort(int *numbers, int *temp, int array_size)
+{
+  m_sort(numbers, temp, 0, array_size - 1);
+}
+ 
+void m_sort(int *numbers, int *temp, int left, int right)
+{
+  int mid;
+ 
+  if (right > left)
+  {
+    mid = (right + left) / 2;
+    m_sort(numbers, temp, left, mid);
+    m_sort(numbers, temp, mid+1, right);
+ 
+    merge(numbers, temp, left, mid+1, right);
+  }
+}
+ 
+void merge(int *numbers, int *temp, int left, int mid, int right)
+{
+  int i, left_end, num_elements, tmp_pos;
+ 
+  left_end = mid - 1;
+  tmp_pos = left;
+  num_elements = right - left + 1;
+ 
+  while ((left <= left_end) && (mid <= right))
+  {
+    if (numbers[left] <= numbers[mid])
+    {
+      temp[tmp_pos] = numbers[left];
+      tmp_pos = tmp_pos + 1;
+      left = left +1;
+    }
+    else
+    {
+      temp[tmp_pos] = numbers[mid];
+      tmp_pos = tmp_pos + 1;
+      mid = mid + 1;
+    }
+  }
+ 
+  while (left <= left_end)
+  {
+    temp[tmp_pos] = numbers[left];
+    left = left + 1;
+    tmp_pos = tmp_pos + 1;
+  }
+  while (mid <= right)
+  {
+    temp[tmp_pos] = numbers[mid];
+    mid = mid + 1;
+    tmp_pos = tmp_pos + 1;
+  }
+ 
+  for (i=0; i <= num_elements; i++)
+  {
+    numbers[right] = temp[right];
+    right = right - 1;
+  }
+}
+//--------------------------------------------------
+
+
 void selectionsort(int *arr, int size)
 {
  	int i,k,temp,smallest;
@@ -114,7 +182,31 @@ void quickSort(int *arr, int size)
   }
 }
       
-      
+void shell(int *arr, int size)
+{
+  int i, j, increment, temp;
+
+  increment = size / 2;
+  while (increment > 0)
+  {
+    for (i=0; i < size; i++)
+    {
+      j = i;
+      temp = arr[i];
+      while ((j >= increment) && (arr[j-increment] > temp))
+      {
+        arr[j] = arr[j - increment];
+        j = j - increment;
+      }
+      arr[j] = temp;
+    }
+    if (increment == 2)
+    	increment = 1;
+    else 
+    	increment = increment * 5 / 11;
+  }
+}
+     
 
 int main()
 {
@@ -123,14 +215,14 @@ int main()
     int op = 1;
     int size = 1000;
     
-    printf("which sort? 1-quick 2-bubble 3-selection 4-radix \n");
+    printf("which sort? 1-quick 2-bubble 3-selection 4-radix 5-merge 6-shell \n");
     scanf("%d",&op);
     
     
     for(int o = 0;o<5;o++)
     {
     int arr [size];
-    
+    int temp [size];
     switch (op)
     {
            case 1:
@@ -152,6 +244,17 @@ int main()
            {
            shuffle(arr,size);
            t = clock();radixsort(arr,size);t = clock() - t;
+           break;}
+           case 5:
+           {
+           shuffle(arr,size);
+           for(int i=0;i<size;i++){temp[i]=0;}
+           t = clock();mergeSort(arr, temp, size);t = clock() - t;
+           break;}
+           case 6:
+           {
+           shuffle(arr,size);
+           t = clock();shell(arr, size);t = clock() - t;
            break;}
            default:
            {
