@@ -1,11 +1,12 @@
 #include <iostream>
 #include <stdio.h>
 #include <time.h>
+#include <stdbool.h> 
 #include <algorithm>
 using namespace std;
 
 # define  MAX_LEVELS  3000
-# define RES_SIZE 50
+# define RES_SIZE 100
 
 void shuffle(int *arr,int size)
 {
@@ -14,7 +15,7 @@ void shuffle(int *arr,int size)
     int k=0;
     for (k=0;k<size;k++)
     {
-        random = rand() % 1000 + 1;
+        random = rand() % 100 + 1;
         arr[k] = random;
     }
 }
@@ -26,6 +27,40 @@ void printarr(int *arr,int size)
   }   
   printf("\n");
 }
+
+
+//bogosort -------------------------------------
+bool is_sorted(int *arr, int size)
+{
+     while ( --size >= 1 ) 
+     {
+     if ( arr[size] < arr[size-1] )
+     { return false;  }
+     }  
+return true;
+}
+
+ void bogoshuffle(int *arr, int size)
+ {  
+      int i, t, r; 
+      for(i=0; i < size; i++) 
+      {    
+      t = arr[i];   
+      r = rand() % size;
+      arr[i] = arr[r];  
+      arr[r] = t;  
+      }
+ } 
+ 
+ 
+ void bogosort(int *arr, int size) 
+ {
+  while ( !is_sorted(arr, size) ){ bogoshuffle(arr, size);}
+ } 
+ 
+ 
+ 
+
 
 //merge sort  ---------------------------------
 void m_sort(int *numbers, int *temp, int left, int right);
@@ -209,26 +244,16 @@ void shell(int *arr, int size)
   }
 }
 
-void savefile(float *result) 
-{ 
-FILE *file; 
-file = fopen("file.txt","w+");
-int i=0;
-for(i=0;i<RES_SIZE;i++)
-{
-fprintf(file,"time: %f  size: ",1.23); /*writes*/ 
-}
-fclose(file); 
-}
+
 
 int main()
 {
     clock_t t;
-    float result[RES_SIZE][2];
+    double result[RES_SIZE][2];
     int op = 1;
     int size = 1000;
-    int sizeincrement = 100;
-    printf("which sort? 1-quick 2-bubble 3-selection 4-radix 5-merge 6-shell \n");
+    int sizeincrement = 1000;
+    printf("which sort? 1-quick 2-bubble 3-selection 4-radix 5-merge 6-shell 7-bogo\n");
     scanf("%d",&op);
     
     
@@ -269,6 +294,11 @@ int main()
            shuffle(arr,size);
            t = clock();shell(arr, size);t = clock() - t;
            break;}
+           case 7:
+           {
+           shuffle(arr,size);
+           t = clock();bogosort(arr, size);t = clock() - t;
+           break;}
            default:
            {
            t=0;printf("error 101: invalid option");
@@ -280,11 +310,12 @@ int main()
     printf("time %f sec , size %f \n",result[o][0],result[o][1]);
     size = size + sizeincrement;
     }
+
     FILE *file; 
     file = fopen("file.txt","w+");
     for(int p=0;p<RES_SIZE;p++)
     {
-    fprintf(file,"time: %f  size: %f\n",result[p][0],result[p][1]); /*writes*/ 
+    fprintf(file,"%f %f\n",result[p][0],result[p][1]); /*writes*/ 
     }
     fclose(file); 
     
